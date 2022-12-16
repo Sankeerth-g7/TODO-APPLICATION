@@ -3,10 +3,7 @@ const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
-
-app.get("/", function (request, response) {
-  response.send("Hello World");
-});
+app.set("view engine", "ejs");
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
@@ -14,6 +11,18 @@ app.get("/todos", async function (_request, response) {
   try {
     const todos = await Todo.listTodos();
     return response.status(200).json(todos);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
+
+app.get("/", async function (_request, response) {
+  console.log("Processing list of all Todos ...");
+  // FILL IN YOUR CODE HERE
+  try {
+    const todos = await Todo.listTodos();
+    return response.status(200).render("index", { todos });
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
