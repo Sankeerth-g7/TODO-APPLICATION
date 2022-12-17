@@ -14,7 +14,7 @@ app.get("/todos", async function (_request, response) {
   try {
     const todos = await Todo.listTodos();
     console.log(todos);
-    return response.status(200).render("index", { todos });
+    return response.status(200).json(todos);
     // return response.status(200).json(todos);
   } catch (error) {
     console.log(error);
