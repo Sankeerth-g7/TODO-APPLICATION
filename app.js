@@ -1,16 +1,21 @@
+/* eslint-disable no-undef */
 const express = require("express");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
+const path = require("path");
 app.use(bodyParser.json());
 app.set("view engine", "ejs");
+app.use("/", express.static(path.resolve("./public")));
 
 app.get("/todos", async function (_request, response) {
   console.log("Processing list of all Todos ...");
   // FILL IN YOUR CODE HERE
   try {
     const todos = await Todo.listTodos();
-    return response.status(200).json(todos);
+    console.log(todos);
+    return response.status(200).render("index", { todos });
+    // return response.status(200).json(todos);
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
