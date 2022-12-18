@@ -1,135 +1,44 @@
-<!-- <table border="2" align="center">
-<tr>
-    <td>Title</td>
-    <td>Completed</td>
-    <td>Due Date</td>
-</tr>
-
-<% for (let i = 0; i < todos.length; i++){
-    %>
-        <tr>
-            <td><%= todos[i].title %></td>
-            <td><%= todos[i].dueDate %></td>
-            <td><%= todos[i].completed %></td>
-        </tr>
-    <%
-} %>
-
-</table> -->
-
-
-
-<body>
-    <div class ="grid grid-cols-6">
-        <div class="col-start-3 col-span-2" >
-            <form action="">
-                <div class="flex gap-2 py-4">
-                    <div class="flex-auto">
-                        <input type="text" placeholder="What's next?" class="border list-disc w-full p-2 text-sm rounded leading-4">
-                    </div>
-                    <div class="flex-auto">
-                        <input type="date" class="border list-disc w-full p-2 text-sm rounded leading-4">
-                    </div>
-                    <div class="flex-none">
-                        <button type="submit"class="bg-green-600 text-white px-2 py-1.5 rounded font-medium mr-2 mb-2 ">
-                            Add
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <div>
-                <div class="flex items-center justify-center">
-                    <h5>Overdue</h5>
-                    <span id="count-overdue" class="bg-gray-300 ml-2 px-2 rounded text-sm">
-                        <%= todos.filter(todo => new Date().toISOString().split("T")[0] > todo.dueDate).length %>
-                    </span>
-                </div>
-                <ul class="list-none">
-                    <li class="Todo-Item">
-                       <div class="flex items-center w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                        <input id="todo-checkbox-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-color-gray">
-                        <label for="todo-checkbox-1" class="ml-2 text-sm text-gray-600 cursor-pointer">have to pay my bills </label>
-                        <a href="#" class=" hidden trash-icon ml-2 ">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
-                        </a>
-                       </div> 
-                    </li>
-                    <li class="Todo-Item">
-                        <div class="flex items-centre w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                            <input id="todo-checkbox-2" type="checkbox" class="w-4 h-4 text-blue-600 bg-color-gray">
-                            <label for="todo-checkbox-2" class="ml-2 text-sm text-gray-600 cursor-pointer">complete wd-201</label>
-                            <a href="#" class=" hidden trash-icon ml-2 ">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                </svg>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-
-                <div class="flex items-center justify-center">
-                    <h5>Due Today</h5>
-                    <span id="count-due-today" class="bg-gray-300 ml-2 px-2 rounded text-sm">
-                        <%= todos.filter(todo => todo.dueDate === new Date().toISOString().split("T")[0]).length %>
-                    </span>
-                </div>
-                <ul class="list-none">
-                    <li class="Todo-Item">
-                       <div class="flex items-centre w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                        <input id="todo-checkbox-3" type="checkbox" class="w-4 h-4 text-blue-600 bg-color-gray">
-                        <label for="todo-checkbox-3" class="ml-2 text-sm text-gray-600 cursor-pointer">Complete level 8</label>
-                        <a href="#" class=" hidden trash-icon ml-2 ">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
-                        </a>
-                       </div> 
-                    </li>
-                    <li class="Todo-Item">
-                        <div class="flex items-centre w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                            <input id="todo-checkbox-4" type="checkbox" class="w-4 h-4 text-blue-600 bg-color-gray">
-                            <label for="todo-checkbox-4" class="ml-2 text-sm text-gray-600 cursor-pointer">Wash clothes</label>
-                            <a href="#" class=" hidden trash-icon ml-2 ">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                </svg>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-                <div class="flex items-center justify-center">
-                    <h5>Due Later</h5>
-                    <span id="count-due-later" class="bg-gray-300 ml-2 px-2 rounded text-sm">
-                        <%= todos.filter(todo => new Date(todo.dueDate) > new Date()).length %>
-                    </span>
-                </div>
-                <ul class="list-none">
-                    <li class="Todo-Item">
-                       <div class="flex items-centre w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                        <input id="todo-checkbox-5" type="checkbox" class="w-4 h-4 text-blue-600 bg-color-gray">
-                        <label for="todo-checkbox-5" class="ml-2 text-sm text-gray-600 cursor-pointer">go to college</label>
-                        <a href="#" class=" hidden trash-icon ml-2 ">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
-                        </a>
-                       </div> 
-                    </li>
-                    <li class="Todo-Item">
-                        <div class="flex items-centre w-fit my-2 px-2 py-1 hover:bg-purple-50 rounded">
-                            <input id="todo-checkbox-5" type="checkbox" class="w-4 h-4 text-blue-600 bg-color-gray">
-                            <label for="todo-checkbox-5" class="ml-2 text-sm text-gray-600 cursor-pointer">complete homework</label>
-                            <a href="#" class=" hidden trash-icon ml-2 ">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                </svg>
-                            </a>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div> 
-</body>
+<div class="flex items-center">
+    <h5><%= section %></h5>
+    <span id="count-<%= id  %>" class="bg-gray-300 ml-2 px-2 rounded text-sm">
+      <%= todos.length %>
+    </span>
+  </div>
+  <ul class="list-none">
+    <% todos.forEach(todo => { %>
+  
+    <li class="item" id="item">
+      <div
+        class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50 group"
+      >
+        <input
+          type="checkbox"
+          id="todo-checkbox-<%= todo.id %>"
+          class="w-4 h-4 text-blue-600 bg-gray-100 rounded border"
+          <%= todo.completed ? "checked" : "" %>
+          onChange="changeTodoStaus(<%= todo.id %>)"
+        />
+        <label  for="todo-checkbox-<%= todo.id %>" class="text-sm ml-2 text-gray-600 cursor-pointer">
+          <%= todo.title %>
+        </label>
+        <a href="#" class="trash-icon ml-2" onclick="deleteTodo(<%= todo.id %>)" >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-4 h-4 hidden group-hover:block"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+            />
+          </svg>
+        </a>
+      </div>
+    </li>
+  
+    <% }) %>
+  </ul>
