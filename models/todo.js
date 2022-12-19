@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
 
-    toggleCompleted() {
-      return this.update({ completed: !this.completed });
+    setCompletionStatus({ completionStatus }) {
+      return this.update({ completed: completionStatus });
     }
 
     static async listTodos() {

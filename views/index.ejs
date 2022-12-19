@@ -10,13 +10,16 @@
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         function changeTodoStaus(id) {
             console.log(id)
+            let completionStatus = document.getElementById(`todo-checkbox-${id}`).checked;
+            console.log("fiujcv");
             fetch(`/todos/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    _csrf: token
+                    _csrf: token,
+                    completed: completionStatus
                 })
             })
             .then((res) => {

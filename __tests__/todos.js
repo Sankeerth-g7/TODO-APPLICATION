@@ -38,7 +38,7 @@ describe("Todo Application", function () {
     expect(response.statusCode).toBe(302);
   });
 
-  test("Test status of a todo", async () => {
+  test("Test set todo status to true", async () => {
     let res = await agent.get("/");
     let csrfToken = extractCSRFToken(res);
     const groupedTodosResponse = await agent
@@ -55,16 +55,29 @@ describe("Todo Application", function () {
       .put(`/todos/${latestTodo.id}`)
       .send({
         _csrf: csrfToken,
+        completed: true,
       });
 
     let parseUpdateRespnse = JSON.parse(toggleCompletedResponse.text);
     expect(parseUpdateRespnse.completed).toBe(true);
+  });
 
+  test("Test set todo complete status to false", async () => {
+    let res = await agent.get("/");
+    let csrfToken = extractCSRFToken(res);
+    const groupedTodosResponse = await agent
+      .get("/")
+      .set("Accept", "application/json");
+    const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
+    const completedItemsCount = parsedGroupedResponse.completedItems.length;
+    const latestTodo =
+      parsedGroupedResponse.completedItems[completedItemsCount - 1];
     res = await agent.get("/");
     csrfToken = extractCSRFToken(res);
 
     toggleCompletedResponse = await agent.put(`/todos/${latestTodo.id}`).send({
       _csrf: csrfToken,
+      completed: false,
     });
 
     parseUpdateRespnse = JSON.parse(toggleCompletedResponse.text);
