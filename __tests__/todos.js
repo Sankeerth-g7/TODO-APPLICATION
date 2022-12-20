@@ -65,13 +65,40 @@ describe("Todo Application", function () {
   test("Test set todo complete status to false", async () => {
     let res = await agent.get("/");
     let csrfToken = extractCSRFToken(res);
-    const groupedTodosResponse = await agent
+
+    await agent.post("/todos").send({
+      title: "Complete Mid Revesion",
+      dueDate: new Date().toISOString(),
+      completed: false,
+      _csrf: csrfToken,
+    });
+
+    res = await agent.get("/");
+    csrfToken = extractCSRFToken(res);
+    let groupedTodosResponse = await agent
       .get("/")
       .set("Accept", "application/json");
-    const parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
-    const completedItemsCount = parsedGroupedResponse.completedItems.length;
-    const latestTodo =
-      parsedGroupedResponse.completedItems[completedItemsCount - 1];
+    let parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
+    let dueTodayCount = parsedGroupedResponse.dueToday.length;
+    let latestTodo = parsedGroupedResponse.dueToday[dueTodayCount - 1];
+    res = await agent.get("/");
+    csrfToken = extractCSRFToken(res);
+
+    toggleCompletedResponse = await agent.put(`/todos/${latestTodo.id}`).send({
+      _csrf: csrfToken,
+      completed: true,
+    });
+
+    parseUpdateRespnse = JSON.parse(toggleCompletedResponse.text);
+    expect(parseUpdateRespnse.completed).toBe(true);
+    res = await agent.get("/");
+    csrfToken = extractCSRFToken(res);
+    groupedTodosResponse = await agent
+      .get("/")
+      .set("Accept", "application/json");
+    parsedGroupedResponse = JSON.parse(groupedTodosResponse.text);
+    completedItemsCount = parsedGroupedResponse.completedItems.length;
+    latestTodo = parsedGroupedResponse.completedItems[completedItemsCount - 1];
     res = await agent.get("/");
     csrfToken = extractCSRFToken(res);
 
