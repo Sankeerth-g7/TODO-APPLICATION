@@ -18,7 +18,7 @@
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div>
                         <label for="firstname">First Name:</label>
-                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="text" name="firstname">
+                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="text" name="firstname" required>
                     </div>
                     <div>
                         <label for="lastname">Last Name:</label>
@@ -26,11 +26,11 @@
                     </div>
                     <div>
                         <label for="email">Email:</label>
-                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="emial" name="email">
+                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="emial" name="email" required>
                     </div>
                     <div>
                         <label for="password">Password:</label>
-                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="password" name="password">
+                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="password" name="password" required>
                     </div>
                     <div class="py-2">
                         <button class="py-2 text-white bg-green-600 hover:bg-green-800 font-medium px-3 py-2 rounded" type="submit">Sign up</button>

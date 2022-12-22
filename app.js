@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -5,6 +6,9 @@ const cookieParser = require("cookie-parser");
 const csrf = require("tiny-csrf");
 
 const passport = require("passport");
+
+const flash = require("connect-flash");
+
 const connectEnsureLogin = require("connect-ensure-login");
 const LocalStrategy = require("passport-local");
 const session = require("express-session");
@@ -16,10 +20,12 @@ const { Todo } = require("./models");
 const { User } = require("./models");
 
 const app = express();
+
 app.use(bodyParser.json());
 
 app.use(express.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser("Some secret info"));
@@ -30,6 +36,12 @@ app.use(
     cookie: { maxAge: 86400000 },
   })
 );
+
+app.use(flash());
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -42,15 +54,16 @@ passport.use(
     (username, password, done) => {
       User.findOne({ where: { email: username } })
         .then(async (user) => {
+          // console.log(user);
           const result = await bcrypt.compare(password, user.password);
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid username or password", null);
+            return done(null, false, { message: "Incorrect password." });
           }
         })
         .catch(() => {
-          return done(null, false, { message: "Invalid Email " });
+          return done(null, false, { message: "Incorrect username." });
         });
     }
   )
@@ -135,7 +148,7 @@ app.get("/signout", (request, response, next) => {
 
 app.post("/todos", async function (request, response) {
   try {
-    console.log(request.user);
+    // console.log(request.user);
     await Todo.addTodo({
       title: request.body.title,
       dueDate: request.body.dueDate,
@@ -149,8 +162,12 @@ app.post("/todos", async function (request, response) {
 });
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
-  (request, response) => {
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  function (request, response) {
+    // console.log(request.user);
     response.redirect("/todos");
   }
 );
@@ -183,13 +200,24 @@ app.put(
   "/todos/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
+    console.log("Done 1");
     const todo = await Todo.findByPk(request.params.id);
+    console.log("Done 2");
     const completionStatus = request.body.completed;
+    console.log("Done 3");
     try {
-      const updatedTodo = await todo.setCompletionStatus({
-        completionStatus,
-      });
-      return response.json(updatedTodo);
+      if (todo && todo.userId === request.user.id) {
+        console.log("Done 4");
+        const updatedTodo = await todo.setCompletionStatus({
+          completionStatus,
+        });
+        return response.json(updatedTodo);
+      } else {
+        console.log("Done 5");
+        return response.status(403).json({
+          success: false,
+        });
+      }
     } catch (error) {
       console.log(error);
       return response.status(422).json(error);

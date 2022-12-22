@@ -19,9 +19,22 @@ const login = async (agent, username, password) => {
     _csrf: csrfToken,
   });
 };
+
+const newUser = async (agent, firstname, lastname, email, password) => {
+  let res = await agent.get("/signup");
+  const csrfToken = extractCSRFToken(res);
+  res = await agent.post("/users").send({
+    firstname: firstname,
+    lastname: lastname,
+    email: email,
+    password: password,
+    _csrf: csrfToken,
+  });
+};
+
 describe("Todo Application", function () {
   beforeAll(async () => {
-    await db.sequelize.sync({ force: true });
+    await db.sequelize.sync({ force: true, logging: false });
     server = app.listen(3001, () => {});
     agent = request.agent(server);
   });
@@ -56,6 +69,7 @@ describe("Todo Application", function () {
     res = await agent.get("/todos");
     expect(res.statusCode).toBe(302);
   });
+
   test("Test Create Todo Functionality", async () => {
     const agent = request.agent(server);
     await login(agent, "test@test.com", "test");
@@ -167,5 +181,43 @@ describe("Todo Application", function () {
     });
 
     expect(JSON.parse(deleteResponse.text).success).toBe(true);
+  });
+
+  test("to check a users todo modification by another user", async () => {
+    const agent = request.agent(server);
+    await newUser(
+      agent,
+      "testuser1",
+      "testuser1",
+      "testuser1@test1",
+      "testuser1"
+    );
+    let res = await agent.get("/todos");
+    const csrfToken = extractCSRFToken(res);
+    const response = await agent.post("/todos").send({
+      title: "Complete Wd 201",
+      dueDate: new Date().toISOString(),
+      completed: false,
+      _csrf: csrfToken,
+    });
+    expect(response.statusCode).toBe(302);
+    const latest_todos = await agent
+      .get("/todos")
+      .set("Accept", "application/json");
+    const parsed_latest_todos = JSON.parse(latest_todos.text);
+    const latest_todo_id =
+      parsed_latest_todos.dueToday[parsed_latest_todos.dueToday.length - 1].id;
+    console.log(latest_todo_id);
+    await agent.get("/signout");
+
+    await login(agent, "test@test.com", "test");
+    expect((await agent.get("/todos")).statusCode).toBe(200);
+    let res2 = await agent.get("/todos");
+    const csrfToken_user2 = extractCSRFToken(res2);
+    const response_user2 = await agent.put(`/todos/${latest_todo_id}`).send({
+      _csrf: csrfToken_user2,
+      completed: true,
+    });
+    expect(response_user2.statusCode).toBe(403);
   });
 });
