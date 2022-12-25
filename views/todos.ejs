@@ -58,12 +58,24 @@
             <%- include('header.ejs') %>
             <a href="/signout">Signout</a>
             <%- include('addTodoFrom.ejs') %>
+            <% if (messages && messages.error && messages.error.length > 0){ %>
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Error!</strong>
+                    <span class="block sm:inline"><%= messages.error[0] %></span>
+                </div>
+            <% } %>
+            <% if (messages && messages.success && messages.success.length > 0){ %>
+                <div id = "success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative animation: " role="alert">
+                    <strong class="font-bold">Success!</strong>
+                    <span class="block sm:inline"><%= messages.success[0] %></span>
+                </div>
+            <% } %>
             <%- include('todo.ejs', {section: "OverDue", todos: overDue, id: "overdue"}) %>
             <%- include('todo.ejs', {section: "Due Today", todos: dueToday, id: "due-today"}) %>
             <%- include('todo.ejs', {section: "Due Later", todos: dueLater, id: "due-later"}) %>
             <%- include('todo.ejs', {section: "Completed", todos: completedItems, id: "completed-items"}) %>
-            <%- include('footer.ejs') %>
-        </div> 
+        </div>
+        
     </div>
 </body>
 </html>

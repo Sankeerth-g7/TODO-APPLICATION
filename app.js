@@ -149,15 +149,22 @@ app.get("/signout", (request, response, next) => {
 app.post("/todos", async function (request, response) {
   try {
     // console.log(request.user);
-    await Todo.addTodo({
-      title: request.body.title,
-      dueDate: request.body.dueDate,
-      userId: request.user.id,
-    });
+    await Todo.addTodo(
+      {
+        title: request.body.title,
+        dueDate: request.body.dueDate,
+        userId: request.user.id,
+      },
+      request.flash("success", "Todo item added successfully")
+    );
     return response.redirect("/todos");
   } catch (error) {
     console.log(error);
-    return response.status(422).json(error);
+    request.flash(
+      "error",
+      "Please enter a valid title and due date for the todo item"
+    );
+    return response.redirect("/todos");
   }
 });
 app.post(
@@ -173,27 +180,48 @@ app.post(
 );
 
 app.post("/users", async function (request, response) {
-  console.log("First Name:", request.body.firstname);
-
-  //hashing the password
-  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
-  console.log("Hashed Password:" + hashedPwd);
-  try {
-    const user = await User.create({
-      firstName: request.body.firstname,
-      lastName: request.body.lastname,
-      email: request.body.email,
-      password: hashedPwd,
-    });
-    request.login(user, (error) => {
-      if (error) {
-        console.log(error);
-      }
-      response.redirect("/todos");
-    });
-  } catch (error) {
-    console.log(error);
+  if (request.body.password.length < 8) {
+    request.flash(
+      "error",
+      "Please enter a password with more than 8 characters"
+    );
+    return response.redirect("/signup");
   }
+  if (request.body.firstname.length <= 2) {
+    request.flash(
+      "error",
+      "Please enter a first name with more than 2 characters"
+    );
+    return response.redirect("/signup");
+  }
+  let email = request.body.email;
+  if (await User.findOne({ where: { email: email } })) {
+    request.flash("error", "email already exists, please enter a different");
+    return response.redirect("/signup");
+  }
+  const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
+  await User.create({
+    firstName: request.body.firstname,
+    lastName: request.body.lastname,
+    email: request.body.email,
+    password: hashedPwd,
+  })
+    .then((user) => {
+      request.flash("success", "User created successfully");
+      request.login(user, (error) => {
+        if (error) {
+          console.log(error);
+        }
+        response.redirect("/todos");
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      request.flash(
+        "error",
+        "Please enter a valid first name, last name, email and password"
+      );
+    });
 });
 
 app.put(

@@ -26,16 +26,22 @@
                     </div>
                     <div>
                         <label for="email">Email:</label>
-                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="emial" name="email" required>
+                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="email" name="email" required>
                     </div>
                     <div>
                         <label for="password">Password:</label>
-                        <input class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="password" name="password" required>
+                        <input id = "password" class="py-1 border border-gray-300 text-gray-900 rounded p2 w-full" type="password" name="password" required>
                     </div>
                     <div class="py-2">
                         <button class="py-2 text-white bg-green-600 hover:bg-green-800 font-medium px-3 py-2 rounded" type="submit">Sign up</button>
                     </div>
                 </form>
+                <% if (messages && messages.error && messages.error.length > 0){ %>
+                    <li><%= messages.error[0] %></li>
+                <% } %>
+                <% if (messages && messages.success && messages.success.length > 0){ %>
+                    <li><%= messages.success[0] %></li>
+                <% } %>
             </div>
         </div>
     </body>
